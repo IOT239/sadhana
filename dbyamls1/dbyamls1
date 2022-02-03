@@ -1,0 +1,41 @@
+---
+apiVersion: "apps/v1"
+kind: "Deployment"
+metadata:
+  name: "nginx-sadhu1"
+  namespace: "default"
+  labels:
+    app: "nginx-sadhu1"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "nginx-sadhu1"
+  template:
+    metadata:
+      labels:
+        app: "nginx-sadhu1"
+    spec:
+      containers:
+      - name: "sadhana-sha256-1"
+        image: "gcr.io/cap1-339903/github.com/iot239/sadhana@sha256:eb8fcf3372b164173c1bcac511337a1853adadc63990d4f1469072efa87a3118"
+---
+apiVersion: "autoscaling/v2beta1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "nginx-sadhu1-hpa-igjx"
+  namespace: "default"
+  labels:
+    app: "nginx-sadhu1"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "nginx-sadhu1"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      targetAverageUtilization: 80
